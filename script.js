@@ -355,7 +355,7 @@ const typeData = {
         genki: 200,
         shy: 0,
         koukishin: 200,
-        sunao: 300,
+        sunao: 200,
         zen: 0,
         aku: 0
     },
