@@ -44,3 +44,20 @@
     width: 60px;
     text-align: right;
 }
+
+body {
+    margin: 0;
+    padding: 20px;
+    box-sizing: border-box;
+
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+}
+
+.container {
+    width: 100%;
+    max-width: 900px;
+    box-sizing: border-box;
+}
+
