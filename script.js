@@ -301,16 +301,16 @@ const typeData = {
     },
 
     "ざんねん": {
-        yasashisa: 100,
-        itazura: 0,
-        shutoyaka: 400,
+        yasashisa: 0,
+        itazura: 400,
+        shutoyaka: 0,
         hade: 0,
         tsuyoki: 0,
-        uchiki: 0,
-        genki: 0,
+        uchiki: 200,
+        genki: 200,
         shy: 400,
-        koukishin: 0,
-        sunao: 200,
+        koukishin: 200,
+        sunao: 0,
         zen: 0,
         aku: 0
     },
