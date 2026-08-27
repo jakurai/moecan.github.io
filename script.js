@@ -53,8 +53,8 @@ const typeData = {
         tsuyoki: 0,
         uchiki: 0,
         genki: 300,
-        shy: 100,
-        koukishin: 0,
+        shy: 0,
+        koukishin: 300,
         sunao: 200,
         zen: 0,
         aku: 0
