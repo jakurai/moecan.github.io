@@ -455,141 +455,415 @@ const personality = [
 ];
 
 
-// 計算
-function calculate() {
 
-    const total = {};
+// =========================
+// ページ読み込み後に処理開始
+// =========================
 
-    // 最初は全部0
-    personality.forEach(key => {
-        total[key] = 0;
+document.addEventListener("DOMContentLoaded", function () {
+
+
+    // =========================
+    // 性格の合計だけ計算
+    // =========================
+    // 性格欄を手入力した場合はこちらを使う
+    // 性格の値そのものは変更しない
+
+    function updatePersonalityTotal() {
+
+        // 善・悪を除いた合計
+        const grandTotal =
+            personality
+                .filter(function (key) {
+                    return key !== "zen" && key !== "aku";
+                })
+                .reduce(function (sum, key) {
+
+                    const element =
+                        document.getElementById(key);
+
+                    const value =
+                        element ? Number(element.value) || 0 : 0;
+
+                    return sum + value;
+
+                }, 0);
+
+
+        // =========================
+        // 合計表示
+        // =========================
+
+        const totalElement =
+            document.getElementById("totalValue");
+
+        if (totalElement) {
+
+            totalElement.textContent =
+                "合計：" + grandTotal;
+
+        }
+
+
+        // =========================
+        // 善・悪の値
+        // =========================
+
+        const zenElement =
+            document.getElementById("zen");
+
+        const akuElement =
+            document.getElementById("aku");
+
+        const zen =
+            zenElement ? Number(zenElement.value) || 0 : 0;
+
+        const aku =
+            akuElement ? Number(akuElement.value) || 0 : 0;
+
+
+        // =========================
+        // 課金・善悪判定
+        // =========================
+
+        const warning =
+            document.getElementById("paymentWarning");
+
+        if (warning) {
+
+ // 善悪両方
+if (zen > 0 && aku > 0) {
+
+    warning.textContent = "※善悪共存は不可※";
+    warning.className = "warning-ng";
+
+} else if (grandTotal > 7500) {
+
+    warning.textContent = "※7500超　不可※";
+    warning.className = "warning-ng";
+
+} else if (grandTotal >= 5001) {
+
+    warning.textContent = "※要課金※";
+    warning.className = "warning-caution";
+
+} else {
+
+    warning.textContent = "5000以下　無課金OK";
+    warning.className = "warning-ok";
+
+}
+        }
+
+    }
+
+
+
+    // =========================
+    // タイプから性格を計算
+    // =========================
+
+    function calculatePersonality() {
+
+        const total = {};
+
+
+        // 全部0にする
+        personality.forEach(function (key) {
+
+            total[key] = 0;
+
+        });
+
+
+        // =========================
+        // チェックされているタイプ
+        // =========================
+
+        const checked =
+            document.querySelectorAll(
+                ".type-checkbox:checked"
+            );
+
+
+        // =========================
+        // 各性格の最大値を取得
+        // =========================
+
+        checked.forEach(function (checkbox) {
+
+            const data =
+                typeData[checkbox.value];
+
+            if (!data) return;
+
+
+            personality.forEach(function (key) {
+
+                const value =
+                    data[key] || 0;
+
+
+                if (value > total[key]) {
+
+                    total[key] = value;
+
+                }
+
+            });
+
+        });
+
+
+        // =========================
+        // 性格欄へ反映
+        // =========================
+
+        personality.forEach(function (key) {
+
+            const element =
+                document.getElementById(key);
+
+            if (element) {
+
+                element.value =
+                    total[key];
+
+            }
+
+        });
+
+
+        // 性格欄に入った値から合計を計算
+        updatePersonalityTotal();
+
+    }
+
+
+
+    // =========================
+    // タイプのチェック変更
+    // =========================
+
+    document.querySelectorAll(".type-checkbox")
+        .forEach(function (checkbox) {
+
+            checkbox.addEventListener("change", function () {
+
+                calculatePersonality();
+
+            });
+
+        });
+
+
+
+    // =========================
+    // 性格を手入力したとき
+    // =========================
+    // ここが今回追加する重要部分
+
+    personality.forEach(function (key) {
+
+        const element =
+            document.getElementById(key);
+
+        if (element) {
+
+            element.addEventListener("input", function () {
+
+                // 入力された値をそのまま使って
+                // 合計だけ再計算
+                updatePersonalityTotal();
+
+            });
+
+        }
+
     });
 
 
-    // 選択されたタイプ
-    const checked =
-        document.querySelectorAll(".type-checkbox:checked");
+
+    // =========================
+    // リセットボタン
+    // =========================
+
+    const resetButton =
+        document.getElementById("resetButton");
+
+    if (resetButton) {
+
+        resetButton.addEventListener("click", function () {
+
+            // 全チェックを外す
+            document.querySelectorAll(".type-checkbox")
+                .forEach(function (checkbox) {
+
+                    checkbox.checked = false;
+
+                });
 
 
-    // 各性格について「一番大きい値」を採用
-    checked.forEach(checkbox => {
+            // 性格値も全部0にする
+            personality.forEach(function (key) {
 
-        const data = typeData[checkbox.value];
+                const element =
+                    document.getElementById(key);
 
-        if (!data) return;
+                if (element) {
 
-        personality.forEach(key => {
+                    element.value = 0;
 
-            const value = data[key] || 0;
+                }
 
-            if (value > total[key]) {
-                total[key] = value;
-            }
+            });
+
+
+            // 合計を再計算
+            updatePersonalityTotal();
+
+        });
+
+    }
+
+
+
+    // =========================
+    // 電卓
+    // =========================
+
+    function calculate() {
+
+        const base =
+            Number(
+                document.getElementById("base").value
+            );
+
+        const minutes =
+            Number(
+                document.getElementById("minutes").value
+            );
+
+        const motivation =
+            Number(
+                document.getElementById("motivation").value
+            );
+
+
+        // =========================
+        // ごはん
+        // =========================
+
+        const foodEnabled =
+            document.getElementById("foodEnabled").checked;
+
+        const foodMultiplier =
+            Number(
+                document.getElementById("foodMultiplier").value
+            );
+
+
+        // =========================
+        // 基本計算
+        // =========================
+
+        let result =
+            base *
+            (minutes / 60) *
+            (motivation / 100);
+
+
+        // ごはんON
+        if (foodEnabled) {
+
+            result *= foodMultiplier;
+
+        }
+
+
+        // 小数点以下切り捨て
+        result = Math.floor(result);
+
+
+        // 0～1未満なら1
+        if (result >= 0 && result < 1) {
+
+            result = 1;
+
+        }
+
+
+        // =========================
+        // 結果表示
+        // =========================
+
+        const resultElement =
+            document.getElementById("result");
+
+        if (resultElement) {
+
+            resultElement.textContent =
+                result;
+
+        }
+
+    }
+
+
+
+    // =========================
+    // ごはんチェック
+    // =========================
+
+    const foodEnabled =
+        document.getElementById("foodEnabled");
+
+    const foodMultiplier =
+        document.getElementById("foodMultiplier");
+
+
+    if (foodEnabled && foodMultiplier) {
+
+        foodEnabled.addEventListener("change", function () {
+
+            // チェック時だけ倍率入力可能
+            foodMultiplier.disabled =
+                !this.checked;
+
+
+            // 即計算
+            calculate();
+
+        });
+
+    }
+
+
+
+    // =========================
+    // 電卓入力時に自動計算
+    // =========================
+
+    document.querySelectorAll(
+        "#base, #minutes, #motivation, #foodMultiplier"
+    ).forEach(function (input) {
+
+        input.addEventListener("input", function () {
+
+            calculate();
 
         });
 
     });
 
 
-    // 性格値を表示
-    personality.forEach(key => {
 
-        const element =
-            document.getElementById(key);
+    // =========================
+    // 最初の計算
+    // =========================
 
-        if (element) {
-            element.textContent = total[key];
-        }
+    calculatePersonality();
 
-    });
-
-
-    // 善・悪を除いた合計
-    const grandTotal =
-        personality
-            .filter(key => key !== "zen" && key !== "aku")
-            .reduce((sum, key) => {
-                return sum + total[key];
-            }, 0);
-
-
-    // 合計表示
-    const totalElement =
-        document.getElementById("totalValue");
-
-    if (totalElement) {
-        totalElement.textContent =
-            "合計：" + grandTotal;
-    }
-
-
-    // 課金・善悪判定
-    const warning =
-        document.getElementById("paymentWarning");
-
-    if (warning) {
-
-        const hasZen = total["zen"] > 0;
-        const hasAku = total["aku"] > 0;
-
-
-        // 善と悪が両方ある
-        if (hasZen && hasAku) {
-
-            warning.textContent = "善悪共存は不可";
-
-
-        // 7500を超える
-        } else if (grandTotal > 7500) {
-
-            warning.textContent = "7500超　不可";
-
-
-        // 5001～7500
-        } else if (grandTotal >= 5001) {
-
-            warning.textContent = "要課金";
-
-
-        // 5000以下
-        } else {
-
-            warning.textContent = "5000以下　無課金OK";
-
-        }
-
-    }
-
-} // ← ここが重要
-
-
-// チェックボックス変更時
-document.querySelectorAll(".type-checkbox").forEach(checkbox => {
-
-    checkbox.addEventListener("change", calculate);
+    calculate();
 
 });
-
-
-// リセットボタン
-const resetButton =
-    document.getElementById("resetButton");
-
-if (resetButton) {
-
-    resetButton.addEventListener("click", () => {
-
-        document.querySelectorAll(".type-checkbox")
-            .forEach(checkbox => {
-                checkbox.checked = false;
-            });
-
-        calculate();
-
-    });
-
-}
-
-
-// ページを開いたとき
-calculate();
