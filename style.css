@@ -106,27 +106,28 @@ h2 {
 }
 
 .personality {
-    width: 10px;
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 8px 20px;
 }
 
 .personality-item {
     display: flex;
     align-items: center;
-    width: 180px;
-    min-height: 24px;
-    padding: 5px;
+    gap: 8px;
 }
 
 .personality-item span {
-    width: 80px;
+    width: 55px;
 }
 
 .personality-item input[type="number"] {
-    width: 60px;
-    height: 24px;
-    padding: 2px 5px;
+    width: 80px;
+    height: 30px;
+    padding: 4px 6px;
     box-sizing: border-box;
 }
+
 #totalValue {
     margin-top: 5px;
     font-size: 20px;
