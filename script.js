@@ -531,15 +531,10 @@ document.addEventListener("DOMContentLoaded", function () {
 
         if (warning) {
 
- // 善悪両方
+// 善悪両方
 if (zen > 0 && aku > 0) {
 
     warning.textContent = "※善悪共存は不可※";
-    warning.className = "warning-ng";
-
-} else if (grandTotal > 7500) {
-
-    warning.textContent = "※7500超　不可※";
     warning.className = "warning-ng";
 
 } else if (grandTotal >= 5001) {
